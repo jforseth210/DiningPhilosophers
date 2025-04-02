@@ -23,4 +23,8 @@ public class Chopstick {
         owner = p;
         return true;
     }
+
+    public synchronized Philosopher getOwner() {
+        return owner;
+    }
 }
