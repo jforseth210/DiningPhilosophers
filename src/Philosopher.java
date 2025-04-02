@@ -26,24 +26,24 @@ class Philosopher implements Runnable {
     }
 
     private void think() throws InterruptedException {
-        System.out.println(name + " is thinking");
+        // System.out.println(name + " is thinking");
         state = State.THINKING;
-        Thread.sleep(ThreadLocalRandom.current().nextLong(6000, 12000));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(600, 1200));
         state = State.HUNGRY;
-        System.out.println(name + " is hungry");
+        // System.out.println(name + " is hungry");
     }
 
     private void eat() throws InterruptedException {
-        state = State.EATING;
         while (!hasChopsticks()) {
             getChopsticks();
             Thread.sleep(100);
         }
-        System.out.println(name + " is eating");
-        Thread.sleep(ThreadLocalRandom.current().nextLong(3000, 6000));
+        state = State.EATING;
+        // System.out.println(name + " is eating");
+        Thread.sleep(ThreadLocalRandom.current().nextLong(300, 600));
         left.release(this);
         right.release(this);
-        System.out.println(name + " is done eating");
+        // System.out.println(name + " is done eating");
         state = State.THINKING;
     }
 
@@ -62,15 +62,17 @@ class Philosopher implements Runnable {
             return true;
         }
         if (leftOwner != null) {
-            System.out.println(name + " is waiting for " + leftOwner.name + " to release");
+            // System.out.println(name + " is waiting for " + leftOwner.name + " to
+            // release");
         }
         if (rightOwner != null) {
-            System.out.println(name + " is waiting for " + rightOwner.name + " to release");
+            // System.out.println(name + " is waiting for " + rightOwner.name + " to
+            // release");
         }
         return false;
     }
 
-    private boolean hasChopsticks() {
+    private synchronized boolean hasChopsticks() {
         return left.getOwner() == this && right.getOwner() == this;
     }
 

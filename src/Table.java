@@ -23,15 +23,22 @@ public class Table {
             new Thread(philosophers[i]).start();
         }
         while (true) {
-            System.out.println(
-                    philosophers[0].getName() + " " + philosophers[0].getState() + " " +
-                            philosophers[1].getName() + ":" + philosophers[1].getState() + " " +
-                            philosophers[2].getName() + ":" + philosophers[2].getState() + " " +
-                            philosophers[3].getName() + ":" + philosophers[3].getState() + " " +
-                            philosophers[4].getName() + ":" + philosophers[4].getState()
 
-            );
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+            System.out.println("+-----------------+-----------+");
+            System.out.println("| Philosopher     | State     |");
+            System.out.println("+-----------------+-----------+");
+
+            for (Philosopher philosopher : philosophers) {
+                System.out.printf("| %-15s | %-9s |%n",
+                        philosopher.getName(),
+                        philosopher.getState());
+            }
+
+            System.out.println("+-----------------+-----------+");
             Thread.sleep(100);
         }
+
     }
 }

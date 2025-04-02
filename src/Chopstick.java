@@ -3,10 +3,6 @@ package src;
 public class Chopstick {
     private volatile Philosopher owner;
 
-    public Chopstick() {
-        System.out.println("Chopstick");
-    }
-
     public synchronized boolean release(Philosopher p) {
         if (p != owner) {
             return false;
