@@ -28,7 +28,7 @@ class Philosopher implements Runnable {
     private void think() throws InterruptedException {
         System.out.println(name + " is thinking");
         state = State.THINKING;
-        Thread.sleep(ThreadLocalRandom.current().nextLong(3000, 6000));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(6000, 12000));
         state = State.HUNGRY;
         System.out.println(name + " is hungry");
     }
@@ -40,7 +40,7 @@ class Philosopher implements Runnable {
             Thread.sleep(100);
         }
         System.out.println(name + " is eating");
-        Thread.sleep(ThreadLocalRandom.current().nextLong(1500, 3000));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(3000, 6000));
         left.release(this);
         right.release(this);
         System.out.println(name + " is done eating");
@@ -72,5 +72,13 @@ class Philosopher implements Runnable {
 
     private boolean hasChopsticks() {
         return left.getOwner() == this && right.getOwner() == this;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public String getName() {
+        return name;
     }
 }
