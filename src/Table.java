@@ -7,10 +7,14 @@ public class Table {
 
     public static void main(String[] args) {
         Table table = new Table();
-        table.setTable();
+        try {
+            table.setTable();
+        } catch (InterruptedException e) {
+            System.out.println("Exiting");
+        }
     }
 
-    public void setTable() {
+    public void setTable() throws InterruptedException {
         for (int i = 0; i < chopsticks.length; i++) {
             chopsticks[i] = new Chopstick();
         }
@@ -19,7 +23,15 @@ public class Table {
             new Thread(philosophers[i]).start();
         }
         while (true) {
-            System.out.println(philosophers[0].getName() + " " + philosophers[0].getState());
+            System.out.println(
+                    philosophers[0].getName() + " " + philosophers[0].getState() + " " +
+                            philosophers[1].getName() + ":" + philosophers[1].getState() + " " +
+                            philosophers[2].getName() + ":" + philosophers[2].getState() + " " +
+                            philosophers[3].getName() + ":" + philosophers[3].getState() + " " +
+                            philosophers[4].getName() + ":" + philosophers[4].getState()
+
+            );
+            Thread.sleep(100);
         }
     }
 }
