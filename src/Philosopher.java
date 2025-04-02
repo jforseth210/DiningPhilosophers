@@ -1,5 +1,7 @@
 package src;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 class Philosopher implements Runnable {
     private Chopstick left;
     private Chopstick right;
@@ -26,21 +28,19 @@ class Philosopher implements Runnable {
     private void think() throws InterruptedException {
         System.out.println(name + " is thinking");
         state = State.THINKING;
-        Thread.sleep(1000);
+        Thread.sleep(ThreadLocalRandom.current().nextLong(3000, 6000));
         state = State.HUNGRY;
         System.out.println(name + " is hungry");
     }
 
     private void eat() throws InterruptedException {
-        System.out.println(name + " is eating");
         state = State.EATING;
         while (!hasChopsticks()) {
-            System.out.println(name + " is trying to get chopsticks");
             getChopsticks();
             Thread.sleep(100);
         }
         System.out.println(name + " is eating");
-        Thread.sleep((long) Math.random() * 1000);
+        Thread.sleep(ThreadLocalRandom.current().nextLong(1500, 3000));
         left.release(this);
         right.release(this);
         System.out.println(name + " is done eating");
@@ -53,11 +53,21 @@ class Philosopher implements Runnable {
         EATING
     }
 
-    private synchronized void getChopsticks() throws InterruptedException {
-        if (left.getOwner() == null && right.getOwner() == null) {
+    private synchronized boolean getChopsticks() throws InterruptedException {
+        Philosopher leftOwner = left.getOwner();
+        Philosopher rightOwner = right.getOwner();
+        if (leftOwner == null && rightOwner == null) {
             left.acquire(this);
             right.acquire(this);
+            return true;
         }
+        if (leftOwner != null) {
+            System.out.println(name + " is waiting for " + leftOwner.name + " to release");
+        }
+        if (rightOwner != null) {
+            System.out.println(name + " is waiting for " + rightOwner.name + " to release");
+        }
+        return false;
     }
 
     private boolean hasChopsticks() {
