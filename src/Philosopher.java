@@ -3,9 +3,11 @@ package src;
 class Philosopher implements Runnable {
     private Chopstick left;
     private Chopstick right;
+    private String name;
     private State state;
 
-    public Philosopher(Chopstick left, Chopstick right) {
+    public Philosopher(String name, Chopstick left, Chopstick right) {
+        this.name = name;
         this.left = left;
         this.right = right;
     }
@@ -22,20 +24,26 @@ class Philosopher implements Runnable {
     }
 
     private void think() throws InterruptedException {
+        System.out.println(name + " is thinking");
         state = State.THINKING;
         Thread.sleep(1000);
         state = State.HUNGRY;
+        System.out.println(name + " is hungry");
     }
 
     private void eat() throws InterruptedException {
+        System.out.println(name + " is eating");
         state = State.EATING;
         while (!hasChopsticks()) {
+            System.out.println(name + " is trying to get chopsticks");
             getChopsticks();
             Thread.sleep(100);
         }
-        Thread.sleep(1000);
+        System.out.println(name + " is eating");
+        Thread.sleep((long) Math.random() * 1000);
         left.release(this);
         right.release(this);
+        System.out.println(name + " is done eating");
         state = State.THINKING;
     }
 
