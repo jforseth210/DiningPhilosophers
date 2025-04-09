@@ -26,6 +26,16 @@ public class Table {
 
             System.out.print("\033[H\033[2J");
             System.out.flush();
+            
+            // Check adjacent philosophers
+            for (int i = 0; i < philosophers.length; i++) {
+                Philosopher current = philosophers[i];
+                Philosopher next = philosophers[(i + 1) % philosophers.length];
+                if (current.getState() == Philosopher.State.EATING && next.getState() == Philosopher.State.EATING) {
+                    throw new IllegalStateException("Adjacent philosophers " +
+                            current.getName() + " and " + next.getName() + " are eating simultaneously!");
+                }
+            }
             System.out.println("+-----------------+-----------+");
             System.out.println("| Philosopher     | State     |");
             System.out.println("+-----------------+-----------+");

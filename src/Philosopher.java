@@ -28,7 +28,7 @@ class Philosopher implements Runnable {
     private void think() throws InterruptedException {
         // System.out.println(name + " is thinking");
         state = State.THINKING;
-        Thread.sleep(ThreadLocalRandom.current().nextLong(600, 1200));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(60, 120));
         state = State.HUNGRY;
         // System.out.println(name + " is hungry");
     }
@@ -40,36 +40,32 @@ class Philosopher implements Runnable {
         }
         state = State.EATING;
         // System.out.println(name + " is eating");
-        Thread.sleep(ThreadLocalRandom.current().nextLong(300, 600));
+        Thread.sleep(ThreadLocalRandom.current().nextLong(120, 180));
         left.release(this);
         right.release(this);
         // System.out.println(name + " is done eating");
         state = State.THINKING;
     }
 
-    private enum State {
+    public enum State {
         THINKING,
         HUNGRY,
         EATING
     }
 
-    private synchronized boolean getChopsticks() throws InterruptedException {
-        Philosopher leftOwner = left.getOwner();
-        Philosopher rightOwner = right.getOwner();
-        if (leftOwner == null && rightOwner == null) {
-            left.acquire(this);
-            right.acquire(this);
-            return true;
+    private boolean getChopsticks() throws InterruptedException {
+        boolean hasLeft = left.acquire(this);
+        if (!hasLeft) {
+            return false;
         }
-        if (leftOwner != null) {
-            // System.out.println(name + " is waiting for " + leftOwner.name + " to
-            // release");
+
+        boolean hasRight = right.acquire(this);
+        if (!hasRight) {
+            left.release(this);
+            return false;
         }
-        if (rightOwner != null) {
-            // System.out.println(name + " is waiting for " + rightOwner.name + " to
-            // release");
-        }
-        return false;
+
+        return true;
     }
 
     private synchronized boolean hasChopsticks() {

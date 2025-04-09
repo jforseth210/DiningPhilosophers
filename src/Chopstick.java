@@ -8,13 +8,12 @@ public class Chopstick {
             return false;
         }
         owner = null;
-        notify();
         return true;
     }
 
     public synchronized boolean acquire(Philosopher p) throws InterruptedException {
-        while (owner != null) {
-            wait();
+        if (owner != null) {
+            return false;
         }
         owner = p;
         return true;
