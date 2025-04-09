@@ -2,24 +2,32 @@ package src;
 
 public class Chopstick {
     private volatile Philosopher owner;
+    private final int id;
 
-    public synchronized boolean release(Philosopher p) {
+    public Chopstick(int id) {
+        this.id = id;
+    }
+
+    public synchronized void release(Philosopher p) {
         if (p != owner) {
-            return false;
+            throw new IllegalStateException("Philosopher " + p.getName() + " is not the owner of this chopstick");
         }
         owner = null;
-        return true;
+        notify();
     }
 
-    public synchronized boolean acquire(Philosopher p) throws InterruptedException {
-        if (owner != null) {
-            return false;
+    public synchronized void acquire(Philosopher p) throws InterruptedException {
+        while (owner != null) {
+            wait();
         }
         owner = p;
-        return true;
     }
 
-    public synchronized Philosopher getOwner() {
+    public Philosopher getOwner() {
         return owner;
+    }
+
+    public int getId() {
+        return id;
     }
 }

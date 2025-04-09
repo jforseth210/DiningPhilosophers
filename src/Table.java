@@ -16,7 +16,7 @@ public class Table {
 
     public void setTable() throws InterruptedException {
         for (int i = 0; i < chopsticks.length; i++) {
-            chopsticks[i] = new Chopstick();
+            chopsticks[i] = new Chopstick(i);
         }
         for (int i = 0; i < chopsticks.length; i++) {
             philosophers[i] = new Philosopher(names[i], chopsticks[i], chopsticks[(i + 1) % chopsticks.length]);
@@ -26,7 +26,7 @@ public class Table {
 
             System.out.print("\033[H\033[2J");
             System.out.flush();
-            
+
             // Check adjacent philosophers
             for (int i = 0; i < philosophers.length; i++) {
                 Philosopher current = philosophers[i];
@@ -47,6 +47,19 @@ public class Table {
             }
 
             System.out.println("+-----------------+-----------+");
+
+            // Add chopstick table
+            System.out.println("+------------+-----------------+");
+            System.out.println("| Chopstick  | Owned By        |");
+            System.out.println("+------------+-----------------+");
+
+            for (Chopstick chopstick : chopsticks) {
+                String owner = chopstick.getOwner() != null ? chopstick.getOwner().getName() : "None";
+                System.out.printf("| %-10d | %-15s |%n", chopstick.getId(), owner);
+            }
+
+            System.out.println("+------------+-----------------+");
+
             Thread.sleep(100);
         }
 

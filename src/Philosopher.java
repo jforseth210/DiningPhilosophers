@@ -53,19 +53,12 @@ class Philosopher implements Runnable {
         EATING
     }
 
-    private boolean getChopsticks() throws InterruptedException {
-        boolean hasLeft = left.acquire(this);
-        if (!hasLeft) {
-            return false;
-        }
+    private void getChopsticks() throws InterruptedException {
+        Chopstick first = left.getId() < right.getId() ? left : right;
+        Chopstick second = left.getId() < right.getId() ? right : left;
 
-        boolean hasRight = right.acquire(this);
-        if (!hasRight) {
-            left.release(this);
-            return false;
-        }
-
-        return true;
+        first.acquire(this);
+        second.acquire(this);
     }
 
     private synchronized boolean hasChopsticks() {
