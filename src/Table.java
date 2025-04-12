@@ -36,15 +36,18 @@ public class Table {
                             current.getName() + " and " + next.getName() + " are eating simultaneously!");
                 }
             }
-            System.out.println("+-----------------+-----------+");
-            System.out.println("| Philosopher     | State     |");
-            System.out.println("+-----------------+-----------+");
+            System.out.println("+-----------------+-----------+---------------+");
+            System.out.println("| Philosopher     | State     | Wait Time (ms)|");
+            System.out.println("+-----------------+-----------+---------------+");
 
             for (Philosopher philosopher : philosophers) {
-                System.out.printf("| %-15s | %-9s |%n",
+                System.out.printf("| %-15s | %-9s | %-13d |%n",
                         philosopher.getName(),
-                        philosopher.getState());
+                        philosopher.getState(),
+                        philosopher.getTotalWaitTime());
             }
+
+            System.out.println("+-----------------+-----------+---------------+");
 
             System.out.println("+-----------------+-----------+");
 

@@ -7,6 +7,7 @@ class Philosopher implements Runnable {
     private Chopstick right;
     private String name;
     private State state;
+    private long totalWaitTime = 0; // Total time spent waiting for chopsticks in milliseconds
 
     public Philosopher(String name, Chopstick left, Chopstick right) {
         this.name = name;
@@ -26,11 +27,9 @@ class Philosopher implements Runnable {
     }
 
     private void think() throws InterruptedException {
-        // System.out.println(name + " is thinking");
         state = State.THINKING;
         Thread.sleep(ThreadLocalRandom.current().nextLong(60, 120));
         state = State.HUNGRY;
-        // System.out.println(name + " is hungry");
     }
 
     private void eat() throws InterruptedException {
@@ -39,11 +38,9 @@ class Philosopher implements Runnable {
             Thread.sleep(100);
         }
         state = State.EATING;
-        // System.out.println(name + " is eating");
         Thread.sleep(ThreadLocalRandom.current().nextLong(120, 180));
         left.release(this);
         right.release(this);
-        // System.out.println(name + " is done eating");
         state = State.THINKING;
     }
 
@@ -54,11 +51,16 @@ class Philosopher implements Runnable {
     }
 
     private void getChopsticks() throws InterruptedException {
+        long startWait = System.currentTimeMillis(); // Start measuring wait time
+
         Chopstick first = left.getId() < right.getId() ? left : right;
         Chopstick second = left.getId() < right.getId() ? right : left;
 
         first.acquire(this);
         second.acquire(this);
+
+        long endWait = System.currentTimeMillis(); // End measuring wait time
+        totalWaitTime += (endWait - startWait); // Add to total wait time
     }
 
     private synchronized boolean hasChopsticks() {
@@ -71,5 +73,9 @@ class Philosopher implements Runnable {
 
     public String getName() {
         return name;
+    }
+
+    public long getTotalWaitTime() {
+        return totalWaitTime;
     }
 }
