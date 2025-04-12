@@ -1,0 +1,54 @@
+@startuml dining_philosophers
+
+package "src" {
+
+  class Chopstick {
+    -owner: Philosopher
+    -id: int
+    +Chopstick(id: int)
+    +release(p: Philosopher)
+    +acquire(p: Philosopher)
+    +getOwner(): Philosopher
+    +getId(): int
+  }
+
+  class Philosopher {
+    -left: Chopstick
+    -right: Chopstick
+    -name: String
+    -state: State
+    -totalWaitTime: long
+    +Philosopher(name: String, left: Chopstick, right: Chopstick)
+    +run()
+    -think()
+    -eat()
+    -getChopsticks()
+    -hasChopsticks(): boolean
+    +getState(): State
+    +getName(): String
+    +getTotalWaitTime(): long
+  }
+
+  enum State {
+    THINKING
+    HUNGRY
+    EATING
+  }
+
+  class Table {
+    -chopsticks: Chopstick[]
+    -philosophers: Philosopher[]
+    -names: String[]
+    +main(args: String[])
+    +setTable()
+  }
+
+  Philosopher o--> "2" Chopstick : left, right
+  Philosopher --> State : uses
+  Table o--> "5" Chopstick : contains
+  Table o--> "5" Philosopher : contains
+  Chopstick --> Philosopher : owner
+
+}
+
+@enduml
